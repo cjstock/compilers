@@ -1,6 +1,4 @@
 """ Questions:
-        1. is '=' a separator or operator? Operator?
-        2. Do I count comment symbols as separators too? Yes?
 
     Notes:
         1. Use isspace() to find whitespace
@@ -20,3 +18,8 @@ class lexer:
         self.separators = ['%%','(',')',',','{','}',';','=','[*','*]']
         self.keywords = ['function','int','boolean','real','if','fi','otherwise','return','put','get','while','true','false']
         self.operators = ['==','/=','>','<','=>','<=','+','-','*','/']
+
+    def parse(path):
+        """Begins parsing the Rat19F file"""
+        with open(path) as file:
+            
