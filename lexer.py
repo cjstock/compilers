@@ -13,13 +13,12 @@ class token:
         self.t_value = t_value
 
 class lexer:
-    def __init__(self):
-        """Initializes the datastructures containing separators, keywords, and operators"""
-        self.separators = ['\%\%','(',')',',','{','}',';','=','[*','*]']
-        self.keywords = ['function','int','boolean','real','if','fi','otherwise','return','put','get','while','true','false']
-        self.operators = ['==','/=','>','<','=>','<=','+','-','*','/']
 
-    def parse(path):
-        """Begins parsing the Rat19F file"""
-        with open(path) as file:
-            pass
+    separators = ['%%','(',')',',','{','}',';','=','[*','*]']
+    keywords = ['function','int','boolean','real','if','fi','otherwise','return','put','get','while','true','false']
+    operators = ['==','/=','>','<','=>','<=','+','-','*','/']
+
+    def __init__(self):
+
+    def get_token():
+        pass
