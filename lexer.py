@@ -12,13 +12,32 @@ class token:
         self.t_type = t_type
         self.t_value = t_value
 
-class lexer:
+class Lexer:
 
     separators = ['%%','(',')',',','{','}',';','=','[*','*]']
     keywords = ['function','int','boolean','real','if','fi','otherwise','return','put','get','while','true','false']
     operators = ['==','/=','>','<','=>','<=','+','-','*','/']
 
-    def __init__(self):
+    def __init__(self, ):
+        pass
+    
+    def handle_serparators(self):
+        pass
 
-    def get_token():
+    def handle_keywords(self):
+        pass
+
+    def handle_operators(self):
+        pass
+
+    def handle_id(self):
+        pass
+
+    def handle_int(self):
+        pass
+
+    def handle_real(self):
+        pass
+
+    def lexer(self):
         pass
