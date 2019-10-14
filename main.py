@@ -5,8 +5,7 @@ from lexer import Token
 
 def main():
 
-    # files = sys.argv[1:]
-    files = ['test4.rat']
+    files = sys.argv[1:]
     
     for file in files:
         lex = Lexer(file=file)

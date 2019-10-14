@@ -207,7 +207,7 @@ class Lexer:
         for char in chars:
             state = self.int_fsm_lookup(state, char)
             if state == self.real_fsm['transitions']['2']:
-                return self.handle_real(chars[2:], t_value + char)
+                return self.handle_real(chars, t_value + char)
             if state:
                 t_value += char
 
@@ -247,8 +247,8 @@ class Lexer:
     def handle_real(self, chars, t_value):
 
         state = self.real_fsm['transitions']['2']
-
-        for char in chars:
+        unfinished = chars[len(t_value):]
+        for char in unfinished:
             state = self.real_fsm_lookup(state, char)
 
             if state:
