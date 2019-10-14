@@ -1,0 +1,27 @@
+
+function. h123h_(1name 0)
+{
+    return 3 * 4
+    [* This is an empty comment *]
+}
+
+%%
+real a, b, c, d;
+a = 3.4;
+b = 1.2.3;
+
+get(a, b, c)
+
+while(low <= high)
+{
+    x = put(low)
+
+    low = low + stop;
+}
+
+%%
+
+if this == that
+{
+    do this = 1000.00000 + 11
+} fi

@@ -1,0 +1,19 @@
+function h123h_(1name 0)
+{
+    return 3 * 4
+}
+
+%%
+$
+int a, b, c, d;
+
+get(a, b, c)
+
+while(low <= high)
+{
+    x = put(low)
+
+    low = low + stop;
+}
+
+%%

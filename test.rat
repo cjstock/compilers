@@ -1,19 +1,12 @@
-[* this is comment for this sample code which
-   converts  Fahrenheit into Celcius *]
+[* Comments are tokenized *]
 
-function convert1x (fahr int)
+function hello_world(name 0)
 {
-           return 5 * (fahr -32) / 9;
+    return 3 * 4
 }
 
 %%
-     int    low,  high, step;      [* declarations *]
 
-     get (low, high, step);
-     while (low  <=  high )  
-         {  put (low);
-             put (convert1x (low));
-             low =  low  +  step;
-         } 
+int a, b, c, d;
 
- %%
+get(a, b, c)

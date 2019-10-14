@@ -1,43 +1,300 @@
-""" Questions:
-
-    Notes:
-        1. Use isspace() to find whitespace
-
-"""
 import sys
 
-class token:
+class Token:
     def __init__(self, t_type, t_value):
         """Initializes an instance of the token class"""
         self.t_type = t_type
         self.t_value = t_value
+        self.length = len(t_value)
+
 
 class Lexer:
-
-    separators = ['%%','(',')',',','{','}',';','=','[*','*]']
+    separators = ['%%', '(', ')', ',', '{','}', ';', '=', '[*', '*]']
     keywords = ['function','int','boolean','real','if','fi','otherwise','return','put','get','while','true','false']
     operators = ['==','/=','>','<','=>','<=','+','-','*','/']
+    opsep = separators + operators
 
-    def __init__(self, ):
-        pass
+    id_fsm = {
+        'start': '0',
+        'finals': [1, 2, 3, 4],
+        'transitions': { 
+            '0':[1],
+            '1':[2, 3, 4],
+            '2':[2, 3, 4],
+            '3':[2, 3, 4],
+            '4':[2, 3, 4],
+        }
+    }
+
+    int_fsm = {
+        'start' : '0',
+        'finals': [1],
+        'transitions': {
+            '0': [1],
+            '1': [1]
+        }
+    }
+
+    real_fsm = {
+        'start' : '0',
+        'finals': [1],
+        'transitions': {
+            '0': [1],
+            '1': [1, 2],
+            '2': [3],
+            '3': [3]
+        }
+    }
+
+
+    def __init__(self, file):
+       self.file_path = file
+       self.chars_read = 0
+       self.done = False
+
+
+    def handle_percent(self, chars):
+        return Token(t_type='separator', t_value=chars[0:2])
+
+
+    def handle_open_paren(self, chars):
+        return Token(t_type='separator', t_value=chars[0])
+
+
+    def handle_close_paren(self, chars):
+        return Token(t_type='separator', t_value=chars[0])
+
+
+    def handle_comma(self, chars):
+        return Token(t_type='separator', t_value=chars[0])
+
+
+    def handle_open_curl(self, chars):
+        return Token(t_type='separator', t_value=chars[0])
     
-    def handle_serparators(self):
-        pass
 
-    def handle_keywords(self):
-        pass
+    def handle_close_curl(self, chars):
+        return Token(t_type='separator', t_value=chars[0])
+    
 
-    def handle_operators(self):
-        pass
+    def handle_semicolon(self, chars):
+        return Token(t_type='separator', t_value=chars[0])
 
-    def handle_id(self):
-        pass
 
-    def handle_int(self):
-        pass
+    def handle_equals(self, chars):
+        if len(chars) == 1 or (chars[1] != '=' and chars[1] != '>'):
+            t_type = 'operator'
+            t_value = chars[0]
+        
+        else:
+            t_type = 'operator'
+            t_value = chars[0:2]
+        
+        return Token(t_type=t_type, t_value=t_value)
 
-    def handle_real(self):
-        pass
+
+    def handle_open_bracket(self, chars):
+        return Token(t_type='separator', t_value=chars[0:2])
+
+
+    def handle_star(self, chars):
+        if len(chars) == 1 or (chars[1] != ']'):
+            t_type = 'operator'
+            t_value = chars[0]
+
+        else:
+            t_type = 'separator'
+            t_value = chars[0:2]
+
+        return Token(t_type=t_type, t_value=t_value)
+
+
+    def handle_slash(self, chars):
+        if len(chars) == 1 or (chars[1] != '='):
+            t_type = 'operator'
+            t_value = chars[0]
+
+        else:
+            t_type = 'operator'
+            t_value = chars[0:2]
+
+        return Token(t_type=t_type, t_value=t_value)
+        
+
+    def handle_right_carr(self, chars):
+        return Token(t_type='operator', t_value=chars[0])
+
+
+    def handle_left_carr(self, chars):
+        if len(chars) == 1 or (chars[1] != '='):
+            t_type = 'operator'
+            t_value = chars[0]
+
+        else:
+            t_type = 'operator'
+            t_value = chars[0:2]
+
+        return Token(t_type=t_type, t_value=t_value)
+
+
+    def handle_plus(self, chars):
+        return Token(t_type='operator', t_value=chars[0])
+
+
+    def handle_minus(self, chars):
+        return Token(t_type='operator', t_value=chars[0])
+    
+
+    symbol_handlers = {
+        '%': handle_percent,
+        '(': handle_open_paren,
+        ')': handle_close_paren,
+        ',': handle_comma,
+        '{': handle_open_curl,
+        '}': handle_close_curl,
+        ';': handle_semicolon,
+        '=': handle_equals,
+        '[': handle_open_bracket,
+        '*': handle_star,
+        '/': handle_slash,
+        '>': handle_right_carr,
+        '<': handle_left_carr,
+        '+': handle_plus,
+        '-': handle_minus
+    }
+
+
+    def handle_opsep(self, chars):    # handle operators and separators
+        return self.symbol_handlers[chars[0]](self=self, chars=chars)
+
+
+    def int_fsm_lookup(self, state, input):
+
+        if input.isdigit():
+            new_state = self.int_fsm['transitions']['1']
+
+        elif input == '.':
+            new_state = self.real_fsm['transitions']['2']
+
+        else:
+            return False
+
+        return new_state
+
+
+    def id_fsm_lookup(self, state, input):
+
+        if input.isalpha():
+            new_state = self.id_fsm['transitions']['2']
+
+        elif input.isdigit():
+            new_state = self.id_fsm['transitions']['3']
+
+        elif input == '_':
+            new_state = self.id_fsm['transitions']['4']
+
+        else:
+            return False
+
+        return new_state
+
+
+    def handle_int(self, chars):
+        t_value = ''
+
+        state = self.int_fsm['transitions'][self.int_fsm['start']]
+
+        for char in chars:
+            state = self.int_fsm_lookup(state, char)
+            if state == self.real_fsm['transitions']['2']:
+                return self.handle_real(chars[2:], t_value + char)
+            if state:
+                t_value += char
+
+            else:
+                return Token(t_type='int', t_value=t_value)
+
+        return Token(t_type='int', t_value=t_value)
+
+
+    def handle_id(self, chars):
+        t_value = chars[0]
+
+        state = self.id_fsm['transitions']['1']
+
+        for char in chars[1:]:
+            state = self.id_fsm_lookup(state, char)
+
+            if state:
+                t_value += char
+
+            else:
+                return Token(t_type='id', t_value=t_value)
+
+        return Token(t_type='id', t_value=t_value)
+
+
+    def real_fsm_lookup(self, state, input):
+        if input.isdigit():
+            new_state = self.real_fsm['transitions']['3']
+
+        else:
+            return False
+
+        return new_state
+
+
+    def handle_real(self, chars, t_value):
+
+        state = self.real_fsm['transitions']['2']
+
+        for char in chars:
+            state = self.real_fsm_lookup(state, char)
+
+            if state:
+                t_value += char
+
+            else:
+                return Token(t_type='real', t_value=t_value)
+
+        return Token(t_type='real', t_value=t_value)
+
 
     def lexer(self):
-        pass
+        with open(self.file_path) as file:
+            chars = file.read()     # get file as a string
+            unprocessed = chars[self.chars_read:]       # get the unprocessed part of the file string
+            done = False
+
+            if self.chars_read >= len(chars):   # if we have read all the chars of the file, we are done
+                self.done = True
+                done = True
+                return False
+
+            cp = 0
+
+            while not done:
+                char = unprocessed[cp]
+
+                if char in [s[0] for s in self.opsep]:  # handle operators & separators
+                    token = self.handle_opsep(unprocessed)
+
+                elif char.isalpha():
+                    token = self.handle_id(unprocessed)
+                    if token.t_value in self.keywords:
+                        token = Token(t_type='keyword', t_value=token.t_value)
+
+                elif char.isdigit():
+                    token = self.handle_int(unprocessed) # TODO get this to handle real and int
+                
+                elif char.isspace():
+                    token = Token(t_type='whitespace', t_value=char)
+
+                else:   # handle unknown token
+                    token = Token(t_type='unknown', t_value=char)
+
+                cp += token.length   # move local character pointer
+                done = True     # 
+                self.chars_read += token.length
+
+                return token
