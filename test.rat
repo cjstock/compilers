@@ -1,12 +1,1 @@
-[* Comments are tokenized *]
-
-function hello_world(name 0)
-{
-    return 3 * 4
-}
-
-%%
-
-int a, b, c, d;
-
-get(a, b, c)
+a = b + c;
