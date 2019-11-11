@@ -1,3 +1,2 @@
-*.txt
 .vscode/
 __pycache__/lexer.cpython-36.pyc
