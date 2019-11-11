@@ -14,6 +14,20 @@ Token: id   Lexeme: c
 	<Term> -> <Factor> <Term'>
 	<Factor> -> <Primary>
 	<Primary> -> <Identifier>
+Token: operator   Lexeme: +
+	<Term'> -> ϵ
+	<Expression'> -> + <Term> <Expression'>
+Token: id   Lexeme: d
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> <Identifier>
+Token: operator   Lexeme: +
+	<Term'> -> ϵ
+	<Expression'> -> + <Term> <Expression'>
+Token: id   Lexeme: e
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> <Identifier>
 Token: separator   Lexeme: ;
 	<Term'> -> ϵ
 	<Expression'> -> ϵ

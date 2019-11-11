@@ -1,2 +1,4 @@
 .vscode/
 __pycache__/lexer.cpython-36.pyc
+__pycache__/rdp.cpython-36.pyc
+output_test.rat.txt
