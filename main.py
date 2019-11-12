@@ -6,8 +6,11 @@ from rdp import RDP
 
 def main():
 
-    parser = RDP()
-    parser.parse()
-    parser.write_output()
+    files = sys.argv[1:]
+
+    for file in files:
+        parser = RDP(file)
+        parser.parse()
+        parser.write_output()
 
 main()

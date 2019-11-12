@@ -1,14 +1,10 @@
-[*comments are great*]
-function convert1x (fahr int)
-{
-    return 5 * (fahr -32)/9;
-}
 
+[* comments are great*]
 %%
 int low, high, step; [*more comment*]
 
 get(low, high, step);
-while (low <= high)
+while (true)
 {
     put(low);
     put(convert1x(low));

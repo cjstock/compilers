@@ -4,8 +4,8 @@ from lexer import Lexer, Token
 class RDP:
     """Defines a Recursive Descent Parser for the Rat19F language"""
 
-    def __init__(self):
-        self.file = 'test.rat'
+    def __init__(self, file):
+        self.file = file
         self.lex = Lexer(file=self.file)
         self.output_statements = []
         self.get_next_token()
@@ -15,7 +15,7 @@ class RDP:
             "Opt_Function_Definitions1": '\t<Opt_Function_Definitions> -> <Function_Definitions>\n',
             "Opt_Function_Definitions2": '\t<Opt_Function_Definitions> -> ϵ\n',
             "Function_Definitions1": '\t<Function_Definitions> -> <Function>\n',
-            "Functions_Definitions2": '\t<Function_Definitions> -> <Function> <Function_Definitions>\n',
+            "Function_Definitions2": '\t<Function_Definitions> -> <Function> <Function_Definitions>\n',
             "Function": '\t<Function> -> function <Identifier> ( <Opt_Parameter_List> ) <Opt_Declaration_List> <Body>\n',
             "Opt_Parameter_List1": '\t<Opt_Parameter_List> -> <Parameter_List>\n',
             "Opt_Parameter_List2": '\t<Opt_Parameter_List> -> ϵ\n',
@@ -149,8 +149,8 @@ class RDP:
 
 
     def Opt_Parameter_List(self):
-        self.add_output_statement(self.statements["Opt_Parameter_List1"])
         if self.current_token and self.current_token.t_type == 'id':
+            self.add_output_statement(self.statements["Opt_Parameter_List1"])
             self.Parameter_List()
         else: self.add_output_statement(self.statements["Opt_Parameter_List2"])
 

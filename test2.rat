@@ -1,7 +1,23 @@
+
 [*comments are great*]
 function convert1x (fahr int)
 {
     return 5 * (fahr -32)/9;
+}
+
+function made_up_function ()
+{
+    if (true /= false)
+    {
+        a = 3.2;
+        b = 1.0;
+        c = 42 + b;
+        return a + b + c;
+    }
+    otherwise 
+    {
+        return false;
+    }
 }
 
 %%

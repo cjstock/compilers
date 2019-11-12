@@ -1,7 +1,7 @@
 Token: keyword   Lexeme: function
 	<Rat19F> -> <Opt_Function_Definitions> %% <Opt_Declaration_List> <Statement_List> %%
 	<Opt_Function_Definitions> -> <Function_Definitions>
-	<Function_Definitions> -> <Function>
+	<Function_Definitions> -> <Function> <Function_Definitions>
 	<Function> -> function <Identifier> ( <Opt_Parameter_List> ) <Opt_Declaration_List> <Body>
 Token: id   Lexeme: convert1x
 Token: separator   Lexeme: (
@@ -52,6 +52,128 @@ Token: int   Lexeme: 9
 	<Primary> -> <Integer>
 Token: separator   Lexeme: ;
 	<Term'> -> ϵ
+Token: separator   Lexeme: }
+Token: keyword   Lexeme: function
+	<Function_Definitions> -> <Function>
+	<Function> -> function <Identifier> ( <Opt_Parameter_List> ) <Opt_Declaration_List> <Body>
+Token: id   Lexeme: made_up_function
+Token: separator   Lexeme: (
+Token: separator   Lexeme: )
+	<Opt_Parameter_List> -> ϵ
+Token: separator   Lexeme: {
+	<Opt_Declaration_List> -> ϵ
+	<Body> -> { <Statement_List> }
+Token: keyword   Lexeme: if
+	<Statement_List> -> <Statement>
+	<Statement> -> <If>
+	if ( <Condition> ) <Statement> otherwise <Statement> fi
+Token: separator   Lexeme: (
+Token: keyword   Lexeme: true
+	<Condition> -> <Expression> <Relop> <Expression>
+	<Expression> -> <Term> <Expression'>
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> true
+Token: operator   Lexeme: /=
+	<Term'> -> ϵ
+	<Relop> -> /=
+Token: keyword   Lexeme: false
+	<Expression> -> <Term> <Expression'>
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> false
+Token: separator   Lexeme: )
+	<Term'> -> ϵ
+Token: separator   Lexeme: {
+	<Statement> -> <Compound>
+	<Compound> -> { <Statement_List> }
+Token: id   Lexeme: a
+	<Statement_List> -> <Statement> <Statement_List>
+	<Statement> -> <Assign>
+	<Assign> -> <Identifier> = <Expression> ;
+Token: operator   Lexeme: =
+Token: real   Lexeme: 3.2
+	<Expression> -> <Term> <Expression'>
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> <Real>
+Token: separator   Lexeme: ;
+	<Term'> -> ϵ
+Token: id   Lexeme: b
+	<Statement_List> -> <Statement> <Statement_List>
+	<Statement> -> <Assign>
+	<Assign> -> <Identifier> = <Expression> ;
+Token: operator   Lexeme: =
+Token: real   Lexeme: 1.0
+	<Expression> -> <Term> <Expression'>
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> <Real>
+Token: separator   Lexeme: ;
+	<Term'> -> ϵ
+Token: id   Lexeme: c
+	<Statement_List> -> <Statement> <Statement_List>
+	<Statement> -> <Assign>
+	<Assign> -> <Identifier> = <Expression> ;
+Token: operator   Lexeme: =
+Token: int   Lexeme: 42
+	<Expression> -> <Term> <Expression'>
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> <Integer>
+Token: operator   Lexeme: +
+	<Term'> -> ϵ
+	<Expression'> -> + <Term> <Expression'>
+Token: id   Lexeme: b
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> <Identifier>
+Token: separator   Lexeme: ;
+	<Term'> -> ϵ
+	<Expression'> -> ϵ
+Token: keyword   Lexeme: return
+	<Statement_List> -> <Statement>
+	<Statement> -> <Return>
+	<Return> -> return <Expression> ;
+Token: id   Lexeme: a
+	<Expression> -> <Term> <Expression'>
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> <Identifier>
+Token: operator   Lexeme: +
+	<Term'> -> ϵ
+	<Expression'> -> + <Term> <Expression'>
+Token: id   Lexeme: b
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> <Identifier>
+Token: operator   Lexeme: +
+	<Term'> -> ϵ
+	<Expression'> -> + <Term> <Expression'>
+Token: id   Lexeme: c
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> <Identifier>
+Token: separator   Lexeme: ;
+	<Term'> -> ϵ
+	<Expression'> -> ϵ
+Token: separator   Lexeme: }
+Token: keyword   Lexeme: otherwise
+Token: separator   Lexeme: {
+	<Statement> -> <Compound>
+	<Compound> -> { <Statement_List> }
+Token: keyword   Lexeme: return
+	<Statement_List> -> <Statement>
+	<Statement> -> <Return>
+	<Return> -> return <Expression> ;
+Token: keyword   Lexeme: false
+	<Expression> -> <Term> <Expression'>
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> false
+Token: separator   Lexeme: ;
+	<Term'> -> ϵ
+Token: separator   Lexeme: }
 Token: separator   Lexeme: }
 Token: separator   Lexeme: %%
 Token: keyword   Lexeme: int

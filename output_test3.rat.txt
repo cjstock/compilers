@@ -1,0 +1,43 @@
+Token: separator   Lexeme: %%
+Token: keyword   Lexeme: int
+	<Opt_Declaration_List> -> <Declaration_List>
+	<Declaration_List> -> <Declaration> ;
+	<Declaration> -> int <IDs>
+Token: id   Lexeme: low
+	<IDs> -> <Identifier> , IDs
+Token: separator   Lexeme: ,
+Token: id   Lexeme: high
+	<IDs> -> <Identifier> , IDs
+Token: separator   Lexeme: ,
+Token: id   Lexeme: step
+	<IDs> -> <Identifier>
+Token: separator   Lexeme: ;
+Token: keyword   Lexeme: get
+	<Statement_List> -> <Statement> <Statement_List>
+	<Statement> -> <Scan>
+	<Scan> -> get ( <IDs> ) ;
+Token: separator   Lexeme: (
+Token: id   Lexeme: low
+	<IDs> -> <Identifier> , IDs
+Token: separator   Lexeme: ,
+Token: id   Lexeme: high
+	<IDs> -> <Identifier> , IDs
+Token: separator   Lexeme: ,
+Token: id   Lexeme: step
+	<IDs> -> <Identifier>
+Token: separator   Lexeme: )
+Token: separator   Lexeme: ;
+Token: keyword   Lexeme: while
+	<Statement_List> -> <Statement>
+	<Statement> -> <While>
+	<While> -> while ( <Condition> ) <Statement>
+Token: separator   Lexeme: (
+Token: keyword   Lexeme: true
+	<Condition> -> <Expression> <Relop> <Expression>
+	<Expression> -> <Term> <Expression'>
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> true
+Token: separator   Lexeme: )
+	<Term'> -> ϵ
+SYNTAX ERROR:: Line Number:TODO    Token:separator     Value:)    Message:Expected "==", "/=", ">", "<", "=>", or "<=", found ")"!
