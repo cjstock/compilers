@@ -10,3 +10,6 @@ function hello_world(name 0)
 int a, b, c, d;
 
 get(a, b, c)
+[* 
+this is 
+multiline*
