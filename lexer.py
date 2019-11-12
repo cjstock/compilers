@@ -1,6 +1,8 @@
 import sys
 
 class Token:
+
+    """Holds the type and value, and length of a token"""
     def __init__(self, t_type, t_value):
         """Initializes an instance of the token class"""
         self.t_type = t_type
@@ -9,6 +11,8 @@ class Token:
 
 
 class Lexer:
+    """Can parse a file and check its syntactic validity in the Rat19F language"""
+
     separators = ['%%', '(', ')', ',', '{','}', ';', '=', '[*', '*]']
     keywords = ['function','int','boolean','real','if','fi','otherwise','return','put','get','while','true','false']
     operators = ['==','/=','>','<','=>','<=','+','-','*','/']
@@ -52,7 +56,10 @@ class Lexer:
        self.chars_read = 0
        self.done = False
 
+#==================================================================
 
+# symbol handlers
+#==================================================================
     def handle_percent(self, chars):
         return Token(t_type='separator', t_value=chars[0:2])
 
@@ -118,7 +125,6 @@ class Lexer:
                     found_star = True
 
             return Token(t_type='unknown', t_value=t_value)
-        # return Token(t_type='separator', t_value=chars[0:2])
 
 
     def handle_star(self, chars):
@@ -168,7 +174,7 @@ class Lexer:
     def handle_minus(self, chars):
         return Token(t_type='operator', t_value=chars[0])
     
-
+    # Python equivilent of a switch statement
     symbol_handlers = {
         '%': handle_percent,
         '(': handle_open_paren,
@@ -187,10 +193,14 @@ class Lexer:
         '-': handle_minus
     }
 
-
+    # Returns a token by calling the [char] key's associated function in the symbol_handlers dictionary
     def handle_opsep(self, chars):    # handle operators and separators
         return self.symbol_handlers[chars[0]](self=self, chars=chars)
 
+#==================================================================
+
+# int, id, and real look_up functions
+#==================================================================
 
     def int_fsm_lookup(self, state, input):
 
@@ -222,7 +232,21 @@ class Lexer:
 
         return new_state
 
+    def real_fsm_lookup(self, state, input):
+        if input.isdigit():
+            new_state = self.real_fsm['transitions']['3']
 
+        else:
+            return False
+
+        return new_state
+
+#==================================================================
+
+    """handle_functions return tokens of type int, id, and real.
+        They continuously get a state from their lookutp function until it receives false.
+        Then it returns a token and sets it's t_value."""
+#==================================================================
     def handle_int(self, chars):
         t_value = ''
 
@@ -240,13 +264,12 @@ class Lexer:
 
         return Token(t_type='int', t_value=t_value)
 
-
     def handle_id(self, chars):
-        t_value = chars[0]
+        t_value = ''
 
-        state = self.id_fsm['transitions']['1']
+        state = self.id_fsm['transitions'][self.id_fsm['start']]
 
-        for char in chars[1:]:
+        for char in chars:
             state = self.id_fsm_lookup(state, char)
 
             if state:
@@ -256,16 +279,6 @@ class Lexer:
                 return Token(t_type='id', t_value=t_value)
 
         return Token(t_type='id', t_value=t_value)
-
-
-    def real_fsm_lookup(self, state, input):
-        if input.isdigit():
-            new_state = self.real_fsm['transitions']['3']
-
-        else:
-            return False
-
-        return new_state
 
 
     def handle_real(self, chars, t_value):
@@ -284,6 +297,11 @@ class Lexer:
         return Token(t_type='real', t_value=t_value)
 
 
+#==================================================================
+
+    """The lexer function opens a file, keeps track of its current parse position within the file,
+    then return a token."""
+#==================================================================
     def lexer(self):
         with open(self.file_path) as file:
             chars = file.read()     # get file as a string
@@ -300,7 +318,7 @@ class Lexer:
             while not done:
                 char = unprocessed[cp]
 
-                if char in [s[0] for s in self.opsep]:  # handle operators & separators
+                if char in [s[0] for s in self.opsep]:  
                     token = self.handle_opsep(unprocessed)
 
                 elif char.isalpha():
@@ -309,7 +327,7 @@ class Lexer:
                         token = Token(t_type='keyword', t_value=token.t_value)
 
                 elif char.isdigit():
-                    token = self.handle_int(unprocessed) # TODO get this to handle real and int
+                    token = self.handle_int(unprocessed)
                 
                 elif char.isspace():
                     token = Token(t_type='whitespace', t_value=char)
@@ -317,8 +335,8 @@ class Lexer:
                 else:   # handle unknown token
                     token = Token(t_type='unknown', t_value=char)
 
-                cp += token.length   # move local character pointer
-                done = True     # 
+                cp += token.length   
+ 
                 self.chars_read += token.length
 
                 if token.t_type == 'whitespace' or token.t_type == 'comment':

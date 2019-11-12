@@ -1,0 +1,62 @@
+Token: id   Lexeme: a
+	<Statement_List> -> <Statement> <Statement_List>
+	<Statement> -> <Assign>
+	<Assign> -> <Identifier> = <Expression> ;
+Token: operator   Lexeme: =
+Token: id   Lexeme: b
+	<Expression> -> <Term> <Expression'>
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> <Identifier>
+Token: operator   Lexeme: +
+	<Term'> -> ϵ
+	<Expression'> -> + <Term> <Expression'>
+Token: id   Lexeme: c
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> <Identifier>
+Token: separator   Lexeme: ;
+	<Term'> -> ϵ
+	<Expression'> -> ϵ
+Token: keyword   Lexeme: if
+	<Statement_List> -> <Statement>
+	<Statement> -> <If>
+	if ( <Condition> ) <Statement> otherwise <Statement> fi
+Token: separator   Lexeme: (
+Token: id   Lexeme: a
+	<Condition> -> <Expression> <Relop> <Expression>
+	<Expression> -> <Term> <Expression'>
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> <Identifier>
+Token: operator   Lexeme: ==
+	<Term'> -> ϵ
+	<Expression'> -> ϵ
+	<Relop> -> ==
+Token: id   Lexeme: b
+	<Expression> -> <Term> <Expression'>
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> <Identifier>
+Token: separator   Lexeme: )
+	<Term'> -> ϵ
+	<Expression'> -> ϵ
+Token: separator   Lexeme: {
+	<Statement> -> <Compound>
+	<Compound> -> { <Statement_List> }
+Token: id   Lexeme: e
+	<Statement_List> -> <Statement>
+	<Statement> -> <Assign>
+	<Assign> -> <Identifier> = <Expression> ;
+Token: operator   Lexeme: =
+Token: id   Lexeme: f
+	<Expression> -> <Term> <Expression'>
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> <Identifier>
+Token: separator   Lexeme: ;
+	<Term'> -> ϵ
+	<Expression'> -> ϵ
+Token: separator   Lexeme: }
+Token: keyword   Lexeme: otherwise
+SYNTAX ERROR:: Unexpected end of file!

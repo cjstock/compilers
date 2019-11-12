@@ -1,0 +1,99 @@
+Rat19F -> Opt_Function_Definitions %% Opt_Declaration_List Statement_List %%
+Opt_Function_Definitions -> Function_Definitions | Empty
+Function_Definitions -> Function | Function Function_Definitions
+Function -> function Identifier ( Opt_Parameter_List ) Opt_Declaration_List Body
+Opt_Parameter_List -> Parameter_List | Empty
+Parameter_List -> Parameter | Parameter , Parameter_List
+Parameter -> IDs Qualifier
+Qualifier -> int | boolean | real
+Body -> { Statement_List }
+Opt_Declaration_List -> Declaration_List | Empty
+Declaration_List -> Declaration ; | Declaration ; Declaration_List
+Declaration -> Qualifier IDs
+IDs -> Identifier | Identifier , IDs
+Statement_List -> Statement | Statement Statement_List
+Statement -> Compound | Assign | If | Return | Print | Scan | While
+Compound -> { Statement_List }
+Assign -> Identifier = Expression ;
+If -> if ( Condition ) Statement fi | if ( Condition ) Statement otherwise Statement fi
+Return -> return ; | return Expression ;
+Print -> put ( Expression ) ;
+Scan -> get ( IDs ) ;
+While -> while ( Condition ) Statement
+Condition -> Expression Relop Expression
+Relop -> == | /= | > | < | => | <=
+Expression -> Expression + Term | Expression - Term | Term
+Term -> Term * Factor | Term / Factor | Factor
+Factor -> - Primary | Primary
+Primary -> Identifier | Integer | Identifier ( IDs ) | ( Expression ) | Real | true | false
+Empty -> ϵ
+
+
+Rat19F -> Opt_Function_Definitions %% Opt_Declaration_List Statement_List %%
+Opt_Function_Definitions -> Function_Definitions
+                          | ϵ
+
+    Function_Definitions -> Function
+                          | Function Function_Definitions
+                Function -> function Identifier ( Opt_Parameter_List ) Opt_Declaration_List Body
+      Opt_Parameter_List -> Parameter_List
+                          | ϵ
+
+          Parameter_List -> Parameter
+                          | Parameter , Parameter_List
+               Parameter -> IDs Qualifier
+               Qualifier -> int
+                          | boolean
+                          | real
+                    Body -> { Statement_List }
+    Opt_Declaration_List -> Declaration_List
+                          | ϵ
+        Declaration_List -> Declaration ;
+                          | Declaration ; Declaration_List
+             Declaration -> int IDs
+                          | boolean IDs
+                          | real IDs
+                     IDs -> Identifier
+                          | Identifier , IDs
+          Statement_List -> Statement
+                          | Statement Statement_List
+               Statement -> Compound
+                          | Assign
+                          | If
+                          | Return
+                          | Print
+                          | Scan
+                          | While
+                Compound -> { Statement_List }
+                  Assign -> Identifier = Expression ;
+                      If -> if ( Condition ) Statement fi
+                          | if ( Condition ) Statement otherwise Statement fi
+                  Return -> return ;
+                          | return Expression ;
+                   Print -> put ( Expression ) ;
+                    Scan -> get ( IDs ) ;
+                   While -> while ( Condition ) Statement
+               Condition -> Expression Relop Expression
+                   Relop -> ==
+                          | /=
+                          | >
+                          | <
+                          | =>
+                          | <=
+              Expression -> Term Expression'
+                    Term -> Factor Term'
+                  Factor -> - Primary
+                          | Primary
+                 Primary -> Identifier
+                          | Integer
+                          | Identifier ( IDs )
+                          | ( Expression )
+                          | Real
+                          | true
+                          | false
+             Expression' -> + Term Expression'
+                          | - Term Expression'
+                          | ϵ
+                   Term' -> * Factor Term'
+                          | / Factor Term'
+                          | ϵ
