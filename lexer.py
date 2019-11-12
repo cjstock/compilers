@@ -101,7 +101,30 @@ class Lexer:
 
 
     def handle_open_bracket(self, chars):
-        return Token(t_type='separator', t_value=chars[0:2])
+        t_value = chars[0]
+        
+        if len(chars) == 1 or chars[1] != '*':
+            return Token(t_type='unknown', t_value=t_value)
+
+        else:
+            t_value += chars[1] # t_value now contains '[*'
+
+            found_star = False
+
+            for char in chars[2:]:
+                t_value += char
+
+                if found_star:
+                    if char == ']':
+                        return Token(t_type='comment', t_value=t_value)
+
+                    else:
+                        pass
+
+                if char == '*':
+                    found_star = True
+
+            return Token(t_type='unknown', t_value=t_value)
 
 
     def handle_star(self, chars):
@@ -315,5 +338,8 @@ class Lexer:
                 cp += token.length   
  
                 self.chars_read += token.length
+
+                if token.t_type == 'whitespace' or token.t_type == 'comment':
+                    return False
 
                 return token
