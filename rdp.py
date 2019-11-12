@@ -8,6 +8,7 @@ class RDP:
         self.file = file
         self.lex = Lexer(file=self.file)
         self.output_statements = []
+        self.line_number = 0
         self.get_next_token()
 
         self.statements = {
@@ -75,7 +76,7 @@ class RDP:
     def throw_error(self, expected_token):
         if self.current_token:
             message = 'Expected {}, found "{}"!'.format(expected_token, self.current_token.t_value)
-            self.add_output_statement('SYNTAX ERROR:: Line Number:TODO    Token:{}     Value:{}    Message:{}\n'.format(self.current_token.t_type, self.current_token.t_value, message))
+            self.add_output_statement('SYNTAX ERROR:: Line Number:{}    Token:{}     Value:{}    Message:{}\n'.format(self.line_number, self.current_token.t_type, self.current_token.t_value, message))
         elif self.lex.done:
             self.add_output_statement('SYNTAX ERROR:: Unexpected end of file!')
         self.write_output()
@@ -83,14 +84,14 @@ class RDP:
 
 
     def get_next_token(self):
-        self.current_token = self.lex.lexer()
+        self.current_token, self.line_number = self.lex.lexer()
         while not self.current_token:
-            self.current_token = self.lex.lexer()
+            self.current_token, self.line_number = self.lex.lexer()
         # if self.current_token:
         #     while self.current_token.t_type == 'whitespace':
         #         self.current_token = self.lex.lexer()
             
-        self.add_output_statement('Token: {}   Lexeme: {}\n'.format(self.current_token.t_type, self.current_token.t_value))
+        self.add_output_statement('Token: {}   Lexeme: {}   Line Number: {}\n'.format(self.current_token.t_type, self.current_token.t_value, self.line_number))
 
 
     def Rat19F(self):

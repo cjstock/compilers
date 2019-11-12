@@ -55,6 +55,7 @@ class Lexer:
        self.file_path = file
        self.chars_read = 0
        self.done = False
+       self.line_number = 1
 
 #==================================================================
 
@@ -311,7 +312,7 @@ class Lexer:
             if self.chars_read >= len(chars):   # if we have read all the chars of the file, we are done
                 self.done = True
                 done = True
-                return False
+                return False, self.line_number
 
             cp = 0
 
@@ -330,6 +331,8 @@ class Lexer:
                     token = self.handle_int(unprocessed)
                 
                 elif char.isspace():
+                    if '\n' in char:
+                        self.line_number += 1
                     token = Token(t_type='whitespace', t_value=char)
 
                 else:   # handle unknown token
@@ -340,6 +343,6 @@ class Lexer:
                 self.chars_read += token.length
 
                 if token.t_type == 'whitespace' or token.t_type == 'comment':
-                    return False
+                    return False, self.line_number
 
-                return token
+                return token, self.line_number
