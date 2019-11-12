@@ -1,43 +1,43 @@
-Token: separator   Lexeme: %%
-Token: keyword   Lexeme: int
+Token: separator   Lexeme: %%   Line Number: 3
+Token: keyword   Lexeme: int   Line Number: 4
 	<Opt_Declaration_List> -> <Declaration_List>
 	<Declaration_List> -> <Declaration> ;
 	<Declaration> -> int <IDs>
-Token: id   Lexeme: low
+Token: id   Lexeme: low   Line Number: 4
 	<IDs> -> <Identifier> , IDs
-Token: separator   Lexeme: ,
-Token: id   Lexeme: high
+Token: separator   Lexeme: ,   Line Number: 4
+Token: id   Lexeme: high   Line Number: 4
 	<IDs> -> <Identifier> , IDs
-Token: separator   Lexeme: ,
-Token: id   Lexeme: step
+Token: separator   Lexeme: ,   Line Number: 4
+Token: id   Lexeme: step   Line Number: 4
 	<IDs> -> <Identifier>
-Token: separator   Lexeme: ;
-Token: keyword   Lexeme: get
+Token: separator   Lexeme: ;   Line Number: 4
+Token: keyword   Lexeme: get   Line Number: 6
 	<Statement_List> -> <Statement> <Statement_List>
 	<Statement> -> <Scan>
 	<Scan> -> get ( <IDs> ) ;
-Token: separator   Lexeme: (
-Token: id   Lexeme: low
+Token: separator   Lexeme: (   Line Number: 6
+Token: id   Lexeme: low   Line Number: 6
 	<IDs> -> <Identifier> , IDs
-Token: separator   Lexeme: ,
-Token: id   Lexeme: high
+Token: separator   Lexeme: ,   Line Number: 6
+Token: id   Lexeme: high   Line Number: 6
 	<IDs> -> <Identifier> , IDs
-Token: separator   Lexeme: ,
-Token: id   Lexeme: step
+Token: separator   Lexeme: ,   Line Number: 6
+Token: id   Lexeme: step   Line Number: 6
 	<IDs> -> <Identifier>
-Token: separator   Lexeme: )
-Token: separator   Lexeme: ;
-Token: keyword   Lexeme: while
+Token: separator   Lexeme: )   Line Number: 6
+Token: separator   Lexeme: ;   Line Number: 6
+Token: keyword   Lexeme: while   Line Number: 7
 	<Statement_List> -> <Statement>
 	<Statement> -> <While>
 	<While> -> while ( <Condition> ) <Statement>
-Token: separator   Lexeme: (
-Token: keyword   Lexeme: true
+Token: separator   Lexeme: (   Line Number: 7
+Token: keyword   Lexeme: true   Line Number: 7
 	<Condition> -> <Expression> <Relop> <Expression>
 	<Expression> -> <Term> <Expression'>
 	<Term> -> <Factor> <Term'>
 	<Factor> -> <Primary>
 	<Primary> -> true
-Token: separator   Lexeme: )
+Token: separator   Lexeme: )   Line Number: 7
 	<Term'> -> ϵ
-SYNTAX ERROR:: Line Number:TODO    Token:separator     Value:)    Message:Expected "==", "/=", ">", "<", "=>", or "<=", found ")"!
+SYNTAX ERROR:: Line Number:7    Token:separator     Value:)    Message:Expected "==", "/=", ">", "<", "=>", or "<=", found ")"!
