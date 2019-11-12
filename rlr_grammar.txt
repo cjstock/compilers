@@ -31,12 +31,14 @@ Empty -> ϵ
 
 Rat19F -> Opt_Function_Definitions %% Opt_Declaration_List Statement_List %%
 Opt_Function_Definitions -> Function_Definitions
-                          | Empty
+                          | ϵ
+
     Function_Definitions -> Function
                           | Function Function_Definitions
                 Function -> function Identifier ( Opt_Parameter_List ) Opt_Declaration_List Body
       Opt_Parameter_List -> Parameter_List
-                          | Empty
+                          | ϵ
+
           Parameter_List -> Parameter
                           | Parameter , Parameter_List
                Parameter -> IDs Qualifier
@@ -45,7 +47,7 @@ Opt_Function_Definitions -> Function_Definitions
                           | real
                     Body -> { Statement_List }
     Opt_Declaration_List -> Declaration_List
-                          | Empty
+                          | ϵ
         Declaration_List -> Declaration ;
                           | Declaration ; Declaration_List
              Declaration -> int IDs
@@ -89,7 +91,6 @@ Opt_Function_Definitions -> Function_Definitions
                           | Real
                           | true
                           | false
-                   Empty -> ϵ
              Expression' -> + Term Expression'
                           | - Term Expression'
                           | ϵ
