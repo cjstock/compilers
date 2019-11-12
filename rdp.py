@@ -11,7 +11,7 @@ class RDP:
         self.get_next_token()
 
         self.statements = {
-            "Rat19F": '\t<Rat19F> -> <Opt_Function_Definitions> \%\% <Opt_Declaration_List> <Statement_List> \%\%\n',
+            "Rat19F": '\t<Rat19F> -> <Opt_Function_Definitions> %% <Opt_Declaration_List> <Statement_List> %%\n',
             "Opt_Function_Definitions1": '\t<Opt_Function_Definitions> -> <Function_Definitions>\n',
             "Opt_Function_Definitions2": '\t<Opt_Function_Definitions> -> ϵ\n',
             "Function_Definitions1": '\t<Function_Definitions> -> <Function>\n',
@@ -84,20 +84,35 @@ class RDP:
 
     def get_next_token(self):
         self.current_token = self.lex.lexer()
-        if self.current_token:
-            while self.current_token.t_type == 'whitespace':
-                self.current_token = self.lex.lexer()
+        while not self.current_token:
+            self.current_token = self.lex.lexer()
+        # if self.current_token:
+        #     while self.current_token.t_type == 'whitespace':
+        #         self.current_token = self.lex.lexer()
             
-            self.add_output_statement('Token: {}   Lexeme: {}\n'.format(self.current_token.t_type, self.current_token.t_value))
+        self.add_output_statement('Token: {}   Lexeme: {}\n'.format(self.current_token.t_type, self.current_token.t_value))
 
 
     def Rat19F(self):
-        self.add_output_statement(self.statements["Rat19F"])
-        self.Opt_Function_Definitions()
+        if self.current_token and self.current_token.t_value == 'function':
+            self.add_output_statement(self.statements["Rat19F"])
+            self.Opt_Function_Definitions()
+        if self.current_token and self.current_token.t_value == '%%':
+            self.get_next_token()
+            self.Opt_Declaration_List()
+            self.Statement_List()
+            if self.current_token and self.current_token.t_value == '%%':
+                pass
+            else: self.throw_error(expected_token='%%')
+        else: self.throw_error(expected_token='%%')
 
 
     def Opt_Function_Definitions(self):
-        pass
+        if self.current_token and self.current_token.t_value == 'function':
+            self.add_output_statement(self.statements["Opt_Function_Definitions1"])
+            self.Function_Definitions()
+
+        else: self.add_output_statement(self.statements["Opt_Function_Definitions2"])
 
 
     def Function_Definitions(self):
@@ -134,19 +149,20 @@ class RDP:
 
 
     def Opt_Parameter_List(self):
+        self.add_output_statement(self.statements["Opt_Parameter_List1"])
         if self.current_token and self.current_token.t_type == 'id':
-            self.add_output_statement(self.statements["Opt_Parameter_List"])
             self.Parameter_List()
+        else: self.add_output_statement(self.statements["Opt_Parameter_List2"])
 
 
     def Parameter_List(self):
         if self.current_token and self.current_token.t_type == 'id':
-            self.add_output_statement(self.statements["Parameter_List"])
+            self.add_output_statement(self.statements["Parameter_List1"])
             start_ids = len(self.output_statements) -1
             self.Parameter()
 
             if self.current_token and self.current_token.t_value == ',':
-                self.output_statements[start_ids] = self.statements["Parameter_List"]
+                self.output_statements[start_ids] = self.statements["Parameter_List2"]
                 self.get_next_token()
                 self.Parameter_List()
 
@@ -190,8 +206,10 @@ class RDP:
             'boolean' or
             'real'
         ):
-            self.add_output_statement(self.statements["Opt_Declaration_List"])
+            self.add_output_statement(self.statements["Opt_Declaration_List1"])
             self.Declaration_List()
+        
+        else: self.add_output_statement(self.statements["Opt_Declaration_List2"])
 
 
     def Declaration_List(self):
@@ -450,6 +468,10 @@ class RDP:
             ):
             self.output_statements[start_of_return] = self.statements["Return2"]
             self.Expression()
+            if self.current_token and self.current_token.t_value == ';':
+                self.get_next_token()
+
+            else: self.throw_error(expected_token=';')
         elif self.current_token and self.current_token.t_value == ';':
             self.get_next_token()
 
@@ -511,13 +533,13 @@ class RDP:
 
 
     def Relop(self):
-        if self.current_token and self.current_token.t_value == (
-            '==' or
-            '/=' or
-            '>' or
-            '<' or
-            '=>' or
-            '<='
+        if self.current_token and (
+            self.current_token.t_value == '==' or
+            self.current_token.t_value == '/=' or
+            self.current_token.t_value == '>' or
+            self.current_token.t_value == '<' or
+            self.current_token.t_value == '=>' or
+            self.current_token.t_value == '<='
         ):
             self.add_output_statement(statement='\t<Relop> -> {}\n'.format(self.current_token.t_value))
             self.get_next_token()
@@ -567,4 +589,4 @@ class RDP:
 
     def parse(self):
         """Begins parsing the Rat19F file"""
-        self.Statement_List()
+        self.Rat19F()
