@@ -11,6 +11,7 @@ class RDP:
         self.line_number = 0
         self.get_next_token()
 
+        """Holds Non-terminal print statements"""
         self.statements = {
             "Rat19F": '\t<Rat19F> -> <Opt_Function_Definitions> %% <Opt_Declaration_List> <Statement_List> %%\n',
             "Opt_Function_Definitions1": '\t<Opt_Function_Definitions> -> <Function_Definitions>\n',
@@ -62,6 +63,10 @@ class RDP:
             "Body": '\t<Body> -> { <Statement_List> }\n'
         }
 
+#===================================================================================================================
+#
+# Utility Functions
+#===================================================================================================================
 
     def add_output_statement(self, statement):
         self.output_statements.append(statement)
@@ -93,19 +98,27 @@ class RDP:
             
         self.add_output_statement('Token: {}   Lexeme: {}   Line Number: {}\n'.format(self.current_token.t_type, self.current_token.t_value, self.line_number))
 
+#===================================================================================================================
+#
+# Parse Functions
+# In general, the parse functions do the following (look at the definition for Rat19F for more detail):
+# 1. check if the current token is a valid terminal symbol
+# 2. append it's respective production rule
+# 3. call it's respective non-terminal parse functions
+#===================================================================================================================
 
     def Rat19F(self):
-        if self.current_token and self.current_token.t_value == 'function':
-            self.add_output_statement(self.statements["Rat19F"])
-            self.Opt_Function_Definitions()
-        if self.current_token and self.current_token.t_value == '%%':
-            self.get_next_token()
-            self.Opt_Declaration_List()
-            self.Statement_List()
-            if self.current_token and self.current_token.t_value == '%%':
+        if self.current_token and self.current_token.t_value == 'function': # Token is valid for Opt_Function_Definitions()
+            self.add_output_statement(self.statements["Rat19F"])            # Add Rat19F's production rule to the output
+            self.Opt_Function_Definitions()                                 # Call non-terminal function after the current token
+        if self.current_token and self.current_token.t_value == '%%':       # No Opt_Function_Definitions were found, check for %%
+            self.get_next_token()                                           # Process %%
+            self.Opt_Declaration_List()                                     # Call non-terminal function after the current token
+            self.Statement_List()                                           # Call next non-terminal function
+            if self.current_token and self.current_token.t_value == '%%':   # Sucessfully processed file
                 pass
-            else: self.throw_error(expected_token='%%')
-        else: self.throw_error(expected_token='%%')
+            else: self.throw_error(expected_token='%%')                     # Second %% not found
+        else: self.throw_error(expected_token='%%')                         # First %% not found
 
 
     def Opt_Function_Definitions(self):
@@ -591,3 +604,4 @@ class RDP:
     def parse(self):
         """Begins parsing the Rat19F file"""
         self.Rat19F()
+#===================================================================================================================
