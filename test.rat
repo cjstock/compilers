@@ -1,17 +1,12 @@
-[*comments are great*]
-function convert1x (fahr int)
-{
-    return 5 * (fahr -32)/9;
-}
-
 %%
-int low, high, step; [*more comment*]
+int i, max, sum;
 
-get(low, high, step);
-while (low <= high)
-{
-    put(low);
-    put(convert1x(low));
-    low = low + step;
+sum = 0;
+i = 1;
+get(max);
+while(i<max) {
+    sum = sum + i;
+    i = i + 1;
 }
+put(sum + max);
 %%

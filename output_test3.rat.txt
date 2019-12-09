@@ -1,3 +1,20 @@
+Symbol Table
+============================
+ID: low     Type: int     MemLocation: 5000
+ID: high     Type: int     MemLocation: 5001
+ID: step     Type: int     MemLocation: 5002
+============================
+Instruction Table
+============================
+Address: 1     Operation: STDIN
+Address: 2     Operation: POPM     Operand: 5000
+Address: 3     Operation: STDIN
+Address: 4     Operation: POPM     Operand: 5001
+Address: 5     Operation: STDIN
+Address: 6     Operation: POPM     Operand: 5002
+Address: 7     Operation: LABEL
+Address: 8     Operation: PUSHI     Operand: 1
+============================
 Token: separator   Lexeme: %%   Line Number: 3
 Token: keyword   Lexeme: int   Line Number: 4
 	<Opt_Declaration_List> -> <Declaration_List>

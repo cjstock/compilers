@@ -7,7 +7,7 @@ get(low, high, step);
 while (true)
 {
     put(low);
-    put(convert1x(low));
+    put(low);
     low = low + step;
 }
 %%
