@@ -1,4 +1,5 @@
-# TODO: handle typematching, use of id without declaring it, multideclaration of id
+# TODO: handle type matching, use of id without declaring it, multideclaration of id
+# Questions: Factor -> - Primary | Primary, type matching.
 import sys
 from lexer import Lexer, Token
 
@@ -104,6 +105,9 @@ class RDP:
             message += "ID: {}     Type: {}     MemLocation: {}\n".format(k, v[0], v[1])
         message += "============================\n"
         return message
+
+    def get_type_of(self, symbol):
+        return self.symbol_table[symbol][0]
 
     def get_address_of(self, symbol):
         return self.symbol_table[symbol][1]
@@ -344,6 +348,7 @@ class RDP:
             self.add_output_statement(self.statements["IDs1"])
 
             if is_declaration:
+                # handle double declarations in here
                 self.symbol_value = self.current_token.t_value
                 self.add_to_table()
             elif is_scan:
@@ -408,6 +413,7 @@ class RDP:
     def Factor(self):
         if self.current_token and self.current_token.t_value == '-':
             self.add_output_statement(self.statements['Factor1'])
+            #TODO: Handle - Primary
             self.get_next_token()
             self.Primary(is_negative=True)
         elif (self.current_token and (
@@ -424,6 +430,7 @@ class RDP:
 
 
     def Primary(self, is_negative=False):
+        # do type checking here
         if self.current_token and self.current_token.t_type == 'id':
             self.add_output_statement(self.statements["Primary1"])
             start_primary = len(self.output_statements) -1
