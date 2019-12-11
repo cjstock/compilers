@@ -1,60 +1,370 @@
 Symbol Table
 ============================
-ID: low     Type: int     MemLocation: 5000
-ID: high     Type: int     MemLocation: 5001
-ID: step     Type: int     MemLocation: 5002
+ID: i     Type: int     MemLocation: 5000
+ID: max     Type: int     MemLocation: 5001
+ID: sum     Type: int     MemLocation: 5002
+ID: j     Type: int     MemLocation: 5003
+ID: k     Type: int     MemLocation: 5004
+ID: l     Type: int     MemLocation: 5005
+ID: a     Type: boolean     MemLocation: 5006
+ID: b     Type: boolean     MemLocation: 5007
 ============================
 Instruction Table
 ============================
-Address: 1     Operation: STDIN
-Address: 2     Operation: POPM     Operand: 5000
-Address: 3     Operation: STDIN
-Address: 4     Operation: POPM     Operand: 5001
+Address: 1     Operation: PUSHI     Operand: 0
+Address: 2     Operation: POPM     Operand: 5002
+Address: 3     Operation: PUSHI     Operand: 1
+Address: 4     Operation: POPM     Operand: 5000
 Address: 5     Operation: STDIN
-Address: 6     Operation: POPM     Operand: 5002
+Address: 6     Operation: POPM     Operand: 5001
 Address: 7     Operation: LABEL
-Address: 8     Operation: PUSHI     Operand: 1
+Address: 8     Operation: PUSHM     Operand: 5000
+Address: 9     Operation: PUSHM     Operand: 5001
+Address: 10     Operation: LES
+Address: 11     Operation: JUMPZ     Operand: 27
+Address: 12     Operation: PUSHM     Operand: 5002
+Address: 13     Operation: PUSHM     Operand: 5000
+Address: 14     Operation: ADD
+Address: 15     Operation: POPM     Operand: 5002
+Address: 16     Operation: PUSHM     Operand: 5000
+Address: 17     Operation: PUSHI     Operand: -1
+Address: 18     Operation: MUL
+Address: 19     Operation: POPM     Operand: 5000
+Address: 20     Operation: PUSHM     Operand: 5000
+Address: 21     Operation: PUSHI     Operand: 1
+Address: 22     Operation: ADD
+Address: 23     Operation: POPM     Operand: 5000
+Address: 24     Operation: PUSHM     Operand: 5007
+Address: 25     Operation: POPM     Operand: 5006
+Address: 26     Operation: JUMP     Operand: 7
+Address: 27     Operation: PUSHM     Operand: 5006
+Address: 28     Operation: PUSHI     Operand: 1
+Address: 29     Operation: EQU
+Address: 30     Operation: JUMPZ     Operand: 43
+Address: 31     Operation: PUSHM     Operand: 5003
+Address: 32     Operation: PUSHM     Operand: 5004
+Address: 33     Operation: ADD
+Address: 34     Operation: PUSHM     Operand: 5005
+Address: 35     Operation: MUL
+Address: 36     Operation: POPM     Operand: 5000
+Address: 37     Operation: PUSHM     Operand: 5005
+Address: 38     Operation: PUSHI     Operand: -1
+Address: 39     Operation: MUL
+Address: 40     Operation: PUSHI     Operand: -2
+Address: 41     Operation: MUL
+Address: 42     Operation: POPM     Operand: 5005
+Address: 43     Operation: PUSHM     Operand: 5002
+Address: 44     Operation: PUSHM     Operand: 5001
+Address: 45     Operation: ADD
+Address: 46     Operation: STDOUT
+Address: 47     Operation: PUSHI     Operand: 1
+Address: 48     Operation: PUSHM     Operand: 5006
+Address: 49     Operation: EQU
+Address: 50     Operation: JUMPZ
+Address: 51     Operation: STDIN
+Address: 52     Operation: POPM     Operand: 5006
+Address: 53     Operation: PUSHM     Operand: 5007
 ============================
-Token: separator   Lexeme: %%   Line Number: 3
-Token: keyword   Lexeme: int   Line Number: 4
+ERROR: Line Number: 24    Boolean arithmetic not allowed!
+
+Token: separator   Lexeme: %%   Line Number: 1
+Token: keyword   Lexeme: int   Line Number: 2
 	<Opt_Declaration_List> -> <Declaration_List>
-	<Declaration_List> -> <Declaration> ;
+	<Declaration_List> -> <Declaration> ; <Declaration_List>
 	<Declaration> -> int <IDs>
-Token: id   Lexeme: low   Line Number: 4
+Token: id   Lexeme: i   Line Number: 2
+	<IDs> -> <Identifier> , IDs
+Token: separator   Lexeme: ,   Line Number: 2
+Token: id   Lexeme: max   Line Number: 2
+	<IDs> -> <Identifier> , IDs
+Token: separator   Lexeme: ,   Line Number: 2
+Token: id   Lexeme: sum   Line Number: 2
+	<IDs> -> <Identifier>
+Token: separator   Lexeme: ;   Line Number: 2
+Token: keyword   Lexeme: int   Line Number: 3
+	<Declaration_List> -> <Declaration> ; <Declaration_List>
+	<Declaration> -> int <IDs>
+Token: id   Lexeme: j   Line Number: 3
+	<IDs> -> <Identifier> , IDs
+Token: separator   Lexeme: ,   Line Number: 3
+Token: id   Lexeme: k   Line Number: 3
+	<IDs> -> <Identifier> , IDs
+Token: separator   Lexeme: ,   Line Number: 3
+Token: id   Lexeme: l   Line Number: 3
+	<IDs> -> <Identifier>
+Token: separator   Lexeme: ;   Line Number: 3
+Token: keyword   Lexeme: boolean   Line Number: 4
+	<Declaration_List> -> <Declaration> ;
+	<Declaration> -> boolean <IDs>
+Token: id   Lexeme: a   Line Number: 4
 	<IDs> -> <Identifier> , IDs
 Token: separator   Lexeme: ,   Line Number: 4
-Token: id   Lexeme: high   Line Number: 4
-	<IDs> -> <Identifier> , IDs
-Token: separator   Lexeme: ,   Line Number: 4
-Token: id   Lexeme: step   Line Number: 4
+Token: id   Lexeme: b   Line Number: 4
 	<IDs> -> <Identifier>
 Token: separator   Lexeme: ;   Line Number: 4
-Token: keyword   Lexeme: get   Line Number: 6
+Token: id   Lexeme: sum   Line Number: 6
+	<Statement_List> -> <Statement> <Statement_List>
+	<Statement> -> <Assign>
+	<Assign> -> <Identifier> = <Expression> ;
+Token: operator   Lexeme: =   Line Number: 6
+Token: int   Lexeme: 0   Line Number: 6
+	<Expression> -> <Term> <Expression'>
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> <Integer>
+Token: separator   Lexeme: ;   Line Number: 6
+	<Term'> -> ϵ
+Token: id   Lexeme: i   Line Number: 7
+	<Statement_List> -> <Statement> <Statement_List>
+	<Statement> -> <Assign>
+	<Assign> -> <Identifier> = <Expression> ;
+Token: operator   Lexeme: =   Line Number: 7
+Token: int   Lexeme: 1   Line Number: 7
+	<Expression> -> <Term> <Expression'>
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> <Integer>
+Token: separator   Lexeme: ;   Line Number: 7
+	<Term'> -> ϵ
+Token: keyword   Lexeme: get   Line Number: 8
 	<Statement_List> -> <Statement> <Statement_List>
 	<Statement> -> <Scan>
 	<Scan> -> get ( <IDs> ) ;
-Token: separator   Lexeme: (   Line Number: 6
-Token: id   Lexeme: low   Line Number: 6
-	<IDs> -> <Identifier> , IDs
-Token: separator   Lexeme: ,   Line Number: 6
-Token: id   Lexeme: high   Line Number: 6
-	<IDs> -> <Identifier> , IDs
-Token: separator   Lexeme: ,   Line Number: 6
-Token: id   Lexeme: step   Line Number: 6
+Token: separator   Lexeme: (   Line Number: 8
+Token: id   Lexeme: max   Line Number: 8
 	<IDs> -> <Identifier>
-Token: separator   Lexeme: )   Line Number: 6
-Token: separator   Lexeme: ;   Line Number: 6
-Token: keyword   Lexeme: while   Line Number: 7
-	<Statement_List> -> <Statement>
+Token: separator   Lexeme: )   Line Number: 8
+Token: separator   Lexeme: ;   Line Number: 8
+Token: keyword   Lexeme: while   Line Number: 9
+	<Statement_List> -> <Statement> <Statement_List>
 	<Statement> -> <While>
 	<While> -> while ( <Condition> ) <Statement>
-Token: separator   Lexeme: (   Line Number: 7
-Token: keyword   Lexeme: true   Line Number: 7
+Token: separator   Lexeme: (   Line Number: 9
+Token: id   Lexeme: i   Line Number: 9
+	<Condition> -> <Expression> <Relop> <Expression>
+	<Expression> -> <Term> <Expression'>
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> <Identifier>
+Token: operator   Lexeme: <   Line Number: 9
+	<Term'> -> ϵ
+	<Relop> -> <
+Token: id   Lexeme: max   Line Number: 9
+	<Expression> -> <Term> <Expression'>
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> <Identifier>
+Token: separator   Lexeme: )   Line Number: 9
+	<Term'> -> ϵ
+Token: separator   Lexeme: {   Line Number: 9
+	<Statement> -> <Compound>
+	<Compound> -> { <Statement_List> }
+Token: id   Lexeme: sum   Line Number: 10
+	<Statement_List> -> <Statement> <Statement_List>
+	<Statement> -> <Assign>
+	<Assign> -> <Identifier> = <Expression> ;
+Token: operator   Lexeme: =   Line Number: 10
+Token: id   Lexeme: sum   Line Number: 10
+	<Expression> -> <Term> <Expression'>
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> <Identifier>
+Token: operator   Lexeme: +   Line Number: 10
+	<Term'> -> ϵ
+	<Expression'> -> + <Term> <Expression'>
+Token: id   Lexeme: i   Line Number: 10
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> <Identifier>
+Token: separator   Lexeme: ;   Line Number: 10
+	<Term'> -> ϵ
+	<Expression'> -> ϵ
+Token: id   Lexeme: i   Line Number: 11
+	<Statement_List> -> <Statement> <Statement_List>
+	<Statement> -> <Assign>
+	<Assign> -> <Identifier> = <Expression> ;
+Token: operator   Lexeme: =   Line Number: 11
+Token: operator   Lexeme: -   Line Number: 11
+	<Expression> -> <Term> <Expression'>
+	<Term> -> <Factor> <Term'>
+	<Factor> -> - <Primary>
+Token: id   Lexeme: i   Line Number: 11
+	<Primary> -> <Identifier>
+Token: separator   Lexeme: ;   Line Number: 11
+	<Term'> -> ϵ
+Token: id   Lexeme: i   Line Number: 12
+	<Statement_List> -> <Statement> <Statement_List>
+	<Statement> -> <Assign>
+	<Assign> -> <Identifier> = <Expression> ;
+Token: operator   Lexeme: =   Line Number: 12
+Token: id   Lexeme: i   Line Number: 12
+	<Expression> -> <Term> <Expression'>
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> <Identifier>
+Token: operator   Lexeme: +   Line Number: 12
+	<Term'> -> ϵ
+	<Expression'> -> + <Term> <Expression'>
+Token: int   Lexeme: 1   Line Number: 12
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> <Integer>
+Token: separator   Lexeme: ;   Line Number: 12
+	<Term'> -> ϵ
+	<Expression'> -> ϵ
+Token: id   Lexeme: a   Line Number: 13
+	<Statement_List> -> <Statement>
+	<Statement> -> <Assign>
+	<Assign> -> <Identifier> = <Expression> ;
+Token: operator   Lexeme: =   Line Number: 13
+Token: id   Lexeme: b   Line Number: 13
+	<Expression> -> <Term> <Expression'>
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> <Identifier>
+Token: separator   Lexeme: ;   Line Number: 13
+	<Term'> -> ϵ
+Token: separator   Lexeme: }   Line Number: 14
+Token: keyword   Lexeme: if   Line Number: 15
+	<Statement_List> -> <Statement> <Statement_List>
+	<Statement> -> <If>
+	if ( <Condition> ) <Statement> fi
+Token: separator   Lexeme: (   Line Number: 15
+Token: id   Lexeme: a   Line Number: 15
+	<Condition> -> <Expression> <Relop> <Expression>
+	<Expression> -> <Term> <Expression'>
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> <Identifier>
+Token: operator   Lexeme: ==   Line Number: 15
+	<Term'> -> ϵ
+	<Relop> -> ==
+Token: keyword   Lexeme: true   Line Number: 15
+	<Expression> -> <Term> <Expression'>
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> true
+Token: separator   Lexeme: )   Line Number: 15
+	<Term'> -> ϵ
+Token: separator   Lexeme: {   Line Number: 15
+	<Statement> -> <Compound>
+	<Compound> -> { <Statement_List> }
+Token: id   Lexeme: i   Line Number: 16
+	<Statement_List> -> <Statement> <Statement_List>
+	<Statement> -> <Assign>
+	<Assign> -> <Identifier> = <Expression> ;
+Token: operator   Lexeme: =   Line Number: 16
+Token: separator   Lexeme: (   Line Number: 16
+	<Expression> -> <Term> <Expression'>
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> ( <Expression> )
+Token: id   Lexeme: j   Line Number: 16
+	<Expression> -> <Term> <Expression'>
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> <Identifier>
+Token: operator   Lexeme: +   Line Number: 16
+	<Term'> -> ϵ
+	<Expression'> -> + <Term> <Expression'>
+Token: id   Lexeme: k   Line Number: 16
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> <Identifier>
+Token: separator   Lexeme: )   Line Number: 16
+	<Term'> -> ϵ
+	<Expression'> -> ϵ
+Token: operator   Lexeme: *   Line Number: 16
+	<Term'> -> * <Factor> <Term'>
+Token: id   Lexeme: l   Line Number: 16
+	<Factor> -> <Primary>
+	<Primary> -> <Identifier>
+Token: separator   Lexeme: ;   Line Number: 16
+	<Term'> -> ϵ
+Token: id   Lexeme: l   Line Number: 17
+	<Statement_List> -> <Statement>
+	<Statement> -> <Assign>
+	<Assign> -> <Identifier> = <Expression> ;
+Token: operator   Lexeme: =   Line Number: 17
+Token: operator   Lexeme: -   Line Number: 17
+	<Expression> -> <Term> <Expression'>
+	<Term> -> <Factor> <Term'>
+	<Factor> -> - <Primary>
+Token: id   Lexeme: l   Line Number: 17
+	<Primary> -> <Identifier>
+Token: operator   Lexeme: *   Line Number: 17
+	<Term'> -> * <Factor> <Term'>
+Token: operator   Lexeme: -   Line Number: 17
+	<Factor> -> - <Primary>
+Token: int   Lexeme: 2   Line Number: 17
+	<Primary> -> <Integer>
+Token: separator   Lexeme: ;   Line Number: 17
+	<Term'> -> ϵ
+Token: separator   Lexeme: }   Line Number: 18
+Token: keyword   Lexeme: fi   Line Number: 18
+Token: keyword   Lexeme: put   Line Number: 19
+	<Statement_List> -> <Statement> <Statement_List>
+	<Statement> -> <Print>
+	<Print> -> put ( <Expression> ) ;
+Token: separator   Lexeme: (   Line Number: 19
+Token: id   Lexeme: sum   Line Number: 19
+	<Expression> -> <Term> <Expression'>
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> <Identifier>
+Token: operator   Lexeme: +   Line Number: 19
+	<Term'> -> ϵ
+	<Expression'> -> + <Term> <Expression'>
+Token: id   Lexeme: max   Line Number: 19
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> <Identifier>
+Token: separator   Lexeme: )   Line Number: 19
+	<Term'> -> ϵ
+	<Expression'> -> ϵ
+Token: separator   Lexeme: ;   Line Number: 19
+Token: keyword   Lexeme: if   Line Number: 22
+	<Statement_List> -> <Statement>
+	<Statement> -> <If>
+	if ( <Condition> ) <Statement> fi
+Token: separator   Lexeme: (   Line Number: 22
+Token: keyword   Lexeme: true   Line Number: 22
 	<Condition> -> <Expression> <Relop> <Expression>
 	<Expression> -> <Term> <Expression'>
 	<Term> -> <Factor> <Term'>
 	<Factor> -> <Primary>
 	<Primary> -> true
-Token: separator   Lexeme: )   Line Number: 7
+Token: operator   Lexeme: ==   Line Number: 22
 	<Term'> -> ϵ
-SYNTAX ERROR:: Line Number:7    Token:separator     Value:)    Message:Expected "==", "/=", ">", "<", "=>", or "<=", found ")"!
+	<Relop> -> ==
+Token: id   Lexeme: a   Line Number: 22
+	<Expression> -> <Term> <Expression'>
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> <Identifier>
+Token: separator   Lexeme: )   Line Number: 22
+	<Term'> -> ϵ
+Token: separator   Lexeme: {   Line Number: 22
+	<Statement> -> <Compound>
+	<Compound> -> { <Statement_List> }
+Token: keyword   Lexeme: get   Line Number: 23
+	<Statement_List> -> <Statement> <Statement_List>
+	<Statement> -> <Scan>
+	<Scan> -> get ( <IDs> ) ;
+Token: separator   Lexeme: (   Line Number: 23
+Token: id   Lexeme: a   Line Number: 23
+	<IDs> -> <Identifier>
+Token: separator   Lexeme: )   Line Number: 23
+Token: separator   Lexeme: ;   Line Number: 23
+Token: id   Lexeme: a   Line Number: 24
+	<Statement_List> -> <Statement>
+	<Statement> -> <Assign>
+	<Assign> -> <Identifier> = <Expression> ;
+Token: operator   Lexeme: =   Line Number: 24
+Token: id   Lexeme: b   Line Number: 24
+	<Expression> -> <Term> <Expression'>
+	<Term> -> <Factor> <Term'>
+	<Factor> -> <Primary>
+	<Primary> -> <Identifier>
+Token: operator   Lexeme: +   Line Number: 24
+	<Term'> -> ϵ

@@ -1,13 +1,20 @@
-
-[*comments are great*]
 %%
-int low, high, step; [*more comment*]
+int i, max, sum;
+int j, k, l;
+boolean a, b;
 
-get(low, high, step);
-while (low <= high)
-{
-    put(low);
-    put(low);
-    low = low + step;
+sum = 0;
+i=1;
+get(max);
+while(i<max){
+    sum = sum + i;
+    i = -i;
+    i = i + 1;
+    a = b;
 }
-%%
+if(a == true){
+    i = (j+k) * l;
+    l = -l * -2;
+} fi
+put(sum+max);
+%%%

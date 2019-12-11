@@ -1,5 +1,3 @@
-# TODO: handle type matching, use of id without declaring it, multideclaration of id
-# Questions: Factor -> - Primary | Primary, type matching.
 import sys
 from lexer import Lexer, Token
 
@@ -81,7 +79,52 @@ class RDP:
         self.instruction_table = {}
         self.instruction_address = 1
         self.jump_stack = []
-        self.saved_symbol = None
+        self.current_assign_type = None
+        self.assign_symbols = []
+        self.type_error_message = ''
+
+#===================================================================================================================
+#
+# Type Matching Functions
+# ===================================================================================================================
+
+    def throw_type_error(self, error_type, symbol=""):
+        self.type_error_message += "ERROR: "
+
+        if error_type == "no_declaration":
+            self.type_error_message += "Line Number: {}    Identifier '{}' used without prior declaration! Declare '{}' before its use!\n".format(self.line_number, symbol, symbol)
+            
+        elif error_type == "double_declaration":
+            self.type_error_message += "Line Number: {}    Identifier '{}' has already been declared!\n".format(self.line_number, symbol)
+
+        elif error_type == "type_mismatch":
+            self.type_error_message += "Line Number: {}    Type mismatch on {}! Expected type {}, got type {}!\n".format(self.line_number, symbol, self.current_assign_type, self.get_type_of(symbol))
+        
+        elif error_type == "bool_arithmetic":
+            self.type_error_message += "Line Number: {}    Boolean arithmetic not allowed!\n".format(self.line_number)
+
+        elif error_type == "bool_operator":
+            self.type_error_message += "Line Number: {}    The {} operator is not valid when comparing booleans!\n".format(self.line_number, symbol)
+        
+        self.type_error_message += "\n"
+
+        self.write_output()
+        sys.exit(0)
+
+    def add_to_assign_symbols(self, symbol):
+        if self.exists_in_table(symbol):
+            if self.current_assign_type == None:
+                self.current_assign_type = self.get_type_of(symbol)
+
+            if self.get_type_of(symbol) != self.current_assign_type:
+                self.throw_type_error(symbol=symbol, error_type="type_mismatch")
+
+            else:
+                self.assign_symbols.append(symbol)
+
+    def reset_assign_checking(self):
+        self.assign_symbols = []
+        self.current_assign_type = None
 
 #===================================================================================================================
 #
@@ -89,15 +132,19 @@ class RDP:
 # ===================================================================================================================
 
     def exists_in_table(self, symbol):
+        """Checks for usage of identifiers which have no been declared."""
         if symbol in self.symbol_table.keys():
             return True
 
         else:
-            return False
+            self.throw_type_error(symbol=symbol, error_type="no_declaration")
 
     def add_to_table(self):
-        self.symbol_table[self.symbol_value] = [self.symbol_type, self.memory_address]
-        self.memory_address += 1
+        if self.symbol_value in self.symbol_table.keys():
+            self.throw_type_error(symbol=self.symbol_value, error_type="double_declaration")
+        else:
+            self.symbol_table[self.symbol_value] = [self.symbol_type, self.memory_address]
+            self.memory_address += 1
 
     def get_symbol_output(self):
         message = "Symbol Table\n============================\n"
@@ -110,7 +157,8 @@ class RDP:
         return self.symbol_table[symbol][0]
 
     def get_address_of(self, symbol):
-        return self.symbol_table[symbol][1]
+        if self.exists_in_table(symbol):
+            return self.symbol_table[symbol][1]
 
 #===================================================================================================================
 #
@@ -152,6 +200,7 @@ class RDP:
             instr = self.get_instruction_output()
             output.write(sym)
             output.write(instr)
+            output.write(self.type_error_message)
             for line in self.output_statements:
                 output.write(line)
 
@@ -348,7 +397,6 @@ class RDP:
             self.add_output_statement(self.statements["IDs1"])
 
             if is_declaration:
-                # handle double declarations in here
                 self.symbol_value = self.current_token.t_value
                 self.add_to_table()
             elif is_scan:
@@ -413,7 +461,6 @@ class RDP:
     def Factor(self):
         if self.current_token and self.current_token.t_value == '-':
             self.add_output_statement(self.statements['Factor1'])
-            #TODO: Handle - Primary
             self.get_next_token()
             self.Primary(is_negative=True)
         elif (self.current_token and (
@@ -430,11 +477,20 @@ class RDP:
 
 
     def Primary(self, is_negative=False):
-        # do type checking here
         if self.current_token and self.current_token.t_type == 'id':
             self.add_output_statement(self.statements["Primary1"])
             start_primary = len(self.output_statements) -1
+
             self.gen_instr(operation="PUSHM", operand=self.get_address_of(self.current_token.t_value))
+            self.add_to_assign_symbols(self.current_token.t_value)
+
+            if is_negative:
+                if self.get_type_of(self.current_token.t_value) == "int":
+                    self.gen_instr("PUSHI", -1)
+                    self.gen_instr("MUL", "nil")
+                else:
+                    pass #TODO: Handle reversing a boolen id
+
             self.get_next_token()
 
             if self.current_token and self.current_token.t_value == '(':
@@ -447,7 +503,13 @@ class RDP:
 
         elif self.current_token and self.current_token.t_type == 'int':
             self.add_output_statement(self.statements["Primary3"])
-            self.gen_instr("PUSHI", self.current_token.t_value)
+
+            if is_negative:
+                neg_val = int(self.current_token.t_value) * -1
+                self.gen_instr("PUSHI", str(neg_val))
+            else:
+                self.gen_instr("PUSHI", self.current_token.t_value)
+
             self.get_next_token()
 
         elif self.current_token and self.current_token.t_value == '(':
@@ -478,6 +540,10 @@ class RDP:
     def Term_(self):
         if self.current_token and self.current_token.t_value == '*':
             self.add_output_statement(self.statements["Term'1"])
+
+            if self.current_assign_type == "boolean":
+                self.throw_type_error(error_type="bool_arithmetic")
+
             self.get_next_token()
             self.Factor()
             self.gen_instr(operation="MUL", operand="nil")
@@ -485,6 +551,10 @@ class RDP:
 
         elif self.current_token and self.current_token.t_value == '/':
             self.add_output_statement(self.statements["Term'2"])
+
+            if self.current_assign_type == "boolean":
+                self.throw_type_error(error_type="bool_arithmetic")
+
             self.get_next_token()
             self.Factor()
             self.gen_instr(operation="DIV", operand="nil")
@@ -521,8 +591,11 @@ class RDP:
 
     def Expression(self):
         self.add_output_statement(self.statements["Expression"])
+
         self.Term()
         if self.current_token and (self.current_token.t_value == '+' or self.current_token.t_value == '-'):
+            if self.current_assign_type == "boolean":
+                self.throw_type_error(error_type="bool_arithmetic")
             self.Expression_()
 
 
@@ -530,7 +603,7 @@ class RDP:
         if self.current_token and self.current_token.t_value == '=':
             self.get_next_token()
             self.Expression()
-            self.gen_instr(operation="POPM", operand=self.get_address_of(self.saved_symbol))
+            self.gen_instr(operation="POPM", operand=self.get_address_of(self.assign_symbols[0]))
             if self.current_token and self.current_token.t_value == ';':
                 self.get_next_token()
             else: self.throw_error(expected_token=';')
@@ -544,6 +617,7 @@ class RDP:
         if self.current_token and self.current_token.t_value == '(':
             self.get_next_token()
             self.Condition()
+            self.reset_assign_checking()
 
             if self.current_token and self.current_token.t_value == ')':
                 self.get_next_token()
@@ -601,6 +675,7 @@ class RDP:
             if self.current_token and self.current_token.t_value == '(':
                 self.get_next_token()
                 self.Expression()
+                self.reset_assign_checking()
                 self.gen_instr("STDOUT", "nil")
                 if self.current_token and self.current_token.t_value == ')':
                     self.get_next_token()
@@ -638,6 +713,7 @@ class RDP:
             if self.current_token and self.current_token.t_value == '(':
                 self.get_next_token()
                 self.Condition()
+                self.reset_assign_checking()
                 if self.current_token and self.current_token.t_value == ')':
                     self.get_next_token()
                     self.Statement()
@@ -702,6 +778,15 @@ class RDP:
             self.current_token.t_value == '=>' or
             self.current_token.t_value == '<='
         ):
+
+            if self.current_assign_type == "boolean" and (
+                self.current_token.t_value == ">" or
+                self.current_token.t_value == "<" or
+                self.current_token.t_value == "<=" or
+                self.current_token.t_value == "=>"
+            ):
+                self.throw_type_error(symbol=self.current_token.t_value ,error_type="bool_operator")
+
             self.add_output_statement(statement='\t<Relop> -> {}\n'.format(self.current_token.t_value))
             self.get_next_token()
 
@@ -713,9 +798,13 @@ class RDP:
         if self.current_token and self.current_token.t_type == 'id':
             self.add_output_statement(self.statements["Statement"])
             self.add_output_statement(self.statements["Assign"])
-            self.saved_symbol = self.current_token.t_value
+
+            self.add_to_assign_symbols(self.current_token.t_value)
+
             self.get_next_token()
             self.Assign()
+            self.reset_assign_checking()
+
         elif self.current_token and self.current_token.t_value == 'if':
             self.add_output_statement(self.statements["Statement"])
             self.If()
