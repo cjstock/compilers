@@ -89,6 +89,7 @@ class RDP:
 # ===================================================================================================================
 
     def throw_type_error(self, error_type, symbol=""):
+        """Throws an error related to incorrect type usage."""
         self.type_error_message += "ERROR: "
 
         if error_type == "no_declaration":
@@ -112,6 +113,7 @@ class RDP:
         sys.exit(0)
 
     def add_to_assign_symbols(self, symbol):
+        """Adds a symbol to a table which keeps track of the current symbols being used in an expression."""
         if self.exists_in_table(symbol):
             if self.current_assign_type == None:
                 self.current_assign_type = self.get_type_of(symbol)
@@ -132,7 +134,7 @@ class RDP:
 # ===================================================================================================================
 
     def exists_in_table(self, symbol):
-        """Checks for usage of identifiers which have no been declared."""
+        """Checks for usage of identifiers which have not been declared."""
         if symbol in self.symbol_table.keys():
             return True
 
