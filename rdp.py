@@ -154,7 +154,8 @@ class RDP:
         return message
 
     def get_type_of(self, symbol):
-        return self.symbol_table[symbol][0]
+        if self.exists_in_table(symbol):
+            return self.symbol_table[symbol][0]
 
     def get_address_of(self, symbol):
         if self.exists_in_table(symbol):
